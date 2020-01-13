@@ -1,20 +1,24 @@
 {
-  "name": "strapi-to-typescript",
-  "version": "0.2.0",
+  "name": "@aperron/strapi-to-typescript",
+  "version": "0.2.4",
   "description": "Convert the strapi models to typescript interfaces.",
   "main": "index.js",
   "bin": {
     "sts": "./bin/run.js"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "scripts": {
     "start": "tsc -w",
-    "patch-release": "npm version patch && npm publish && git push --follow-tags",
-    "minor-release": "npm version minor && npm publish && git push --follow-tags",
+    "build": "tsc",
+    "patch-release": "npm version patch && tsc && npm publish && git push --follow-tags",
+    "minor-release": "npm version minor && tsc && npm publish && git push --follow-tags",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/erikvullings/strapi-to-typescript.git"
+    "url": "git+https://github.com/aperron/strapi-to-typescript.git"
   },
   "keywords": [
     "Strapi",
@@ -25,9 +29,9 @@
   "author": "Erik Vullings <erik.vullings@gmail.com> (http://www.tno.nl)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/erikvullings/strapi-to-typescript/issues"
+    "url": "https://github.com/aperron/strapi-to-typescript/issues"
   },
-  "homepage": "https://github.com/erikvullings/strapi-to-typescript#readme",
+  "homepage": "https://github.com/aperron/strapi-to-typescript#readme",
   "dependencies": {
     "command-line-args": "^5.0.2",
     "command-line-usage": "^5.0.5"

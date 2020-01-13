@@ -5,14 +5,20 @@ Convert the Strapi models to TypeScript interfaces by processing each of the `./
 # Install and Run
 
 ```console
-npm install -g strapi-to-typescript
-sts path/to/strapi/api/ -o path/to/your/types/dir/
+yarn config set @aperron:registry https://npm.pkg.github.com
+```
+
+```console
+yarn add -g @aperron/strapi-to-typescript
+#yarn --update-checksums
+cd path/to/strapi/
+sts ./api/ -g ./components/ -o path/to/your/types/dir/
 ```
 
 You may define multiple inputs. In case your API models have relations to other plugins like 'users-permissions'.
 
 ```console
-sts path/to/strapi/api/ path/to/strapi/plugins/users-permissions/models -o path/to/your/types/dir/
+sts ./api ./extensions/users-permissions/models/ -o path/to/your/types/dir/
 ```
 
 
@@ -20,7 +26,7 @@ sts path/to/strapi/api/ path/to/strapi/plugins/users-permissions/models -o path/
 
 ```console
 npm i
-npm run start
+npm run build
 ```
 
 ## Explanation
