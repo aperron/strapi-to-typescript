@@ -1,6 +1,6 @@
 {
   "name": "@aperron/strapi-to-typescript",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Convert the strapi models to typescript interfaces.",
   "main": "index.js",
   "bin": {
