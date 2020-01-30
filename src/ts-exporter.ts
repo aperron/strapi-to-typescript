@@ -18,7 +18,13 @@ interface IStructure {
  */
 const toInterfaceName = (name: string) => name ? `I${name.replace(/^./, (str: string) => str.toUpperCase())}` : 'any';
 
-const toCamelCase = (name: string) => name ? `${name.replace(/^./, (str: string) => str.toUpperCase())}` : 'any';
+/**
+ * Convert a name to a Pascal case name
+ * pascalCase => PascalCase.
+ *
+ * @param name name
+ */
+const toPascalCase = (name: string) => name ? `${name.replace(/^./, (str: string) => str.toUpperCase())}` : 'any';
 
 
 /**
@@ -35,7 +41,10 @@ export const toSnakeName = (name: string) =>
 /**
  * Convert a Strapi type to a TypeScript type.
  *
- * @param propType Strapi type
+ * @param interfaceName name of current interface
+ * @param fieldName name of the field
+ * @param model Strapi type
+ * @param enumm Use Enum type (or string literal types)
  */
 const toPropertyType = (interfaceName: string, fieldName: string, model: IStrapiModelAttribute, enumm: boolean) => {
   const pt = model.type ? model.type.toLowerCase() : "any";
@@ -46,7 +55,7 @@ const toPropertyType = (interfaceName: string, fieldName: string, model: IStrapi
       return 'string';
     case 'enumeration':
       if(enumm){
-        return model.enum ? `${interfaceName}${toCamelCase(fieldName)}` : "string";
+        return model.enum ? `${interfaceName}${toPascalCase(fieldName)}` : "string";
       } else {
         return model.enum ? `"${model.enum.join(`" | "`)}"` : "string";
       }
@@ -74,7 +83,7 @@ const toPropertyType = (interfaceName: string, fieldName: string, model: IStrapi
  *
  * @param attr IStrapiModelAttribute
  */
-const groupCompatible = (attr: IStrapiModelAttribute) => {
+const componentCompatible = (attr: IStrapiModelAttribute) => {
   return (attr.type === 'component')
     ? attr.repeatable ? { collection: attr.component!.split('.')[1] } : { model: attr.component!.split('.')[1] }
     : attr;
@@ -82,9 +91,11 @@ const groupCompatible = (attr: IStrapiModelAttribute) => {
 /**
  * Convert a Strapi Attribute to a TypeScript property.
  *
+ * @param interfaceName name of current interface
  * @param name Name of the property
  * @param a Attributes of the property
  * @param structure Overall output structure
+ * @param enumm Use Enum type (or string literal types)
  */
 const strapiModelAttributeToProperty = (
   interfaceName: string,
@@ -100,13 +111,10 @@ const strapiModelAttributeToProperty = (
 ) => {
   const findModelName = (n: string) => {
     const result = structure.filter((s) => s.name.toLowerCase() === n).shift();
-    if (!result){
-      console.log(`WARNING - Model ${n} is unknown => Use any.`)
-    }
     return result ? result.name : '';
   };
   const required = !a.required && !(a.collection || a.repeatable)  ? '?' : '';
-  a = groupCompatible(a);
+  a = componentCompatible(a);
   const collection = a.collection ? '[]' : '';
 
   const propType = a.collection
@@ -121,6 +129,12 @@ const strapiModelAttributeToProperty = (
   return `${name}${required}: ${propType}${collection};`;
 };
 
+/**
+ * Convert all Strapi Enum to TypeScript Enumeration.
+ *
+ * @param interfaceName name of current interface
+ * @param a Attributes
+ */
 const strapiModelAttributeToEnum = (interfaceName: string, attributes: { [attr: string]: IStrapiModelAttribute }): string[] => {
   const enums: string[] = []
   for (const aName in attributes) {
@@ -128,14 +142,13 @@ const strapiModelAttributeToEnum = (interfaceName: string, attributes: { [attr: 
       continue;
     }
     if(attributes[aName].type === 'enumeration'){
-      enums.push(`export enum ${interfaceName}${toCamelCase(aName)} {`);
+      enums.push(`export enum ${interfaceName}${toPascalCase(aName)} {`);
       attributes[aName].enum!.forEach( e => {
         enums.push(`  ${e} = "${e}",`); 
       })
       enums.push(`}\n`);
     }
   }
-
 
   return enums
 }
@@ -160,7 +173,7 @@ const strapiModelExtractImports = (m: IStrapiModel, structure: IStructure[]) => 
       if (!m.attributes.hasOwnProperty(aName)) {
         continue;
       }
-      const a = groupCompatible(m.attributes[aName]);
+      const a = componentCompatible(m.attributes[aName]);
 
       const proposedImport = a.collection
         ? toImportDefinition(a.collection)

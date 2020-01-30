@@ -21,7 +21,7 @@ You may define multiple inputs. In case your API models have relations to other 
 sts ./api ./extensions/users-permissions/models/ -g ./components/ -o path/to/your/types/dir/
 ```
 
-You may generate enumeration or union types with option -e
+You may generate enumeration or string literal types with option -e
 
 ```sh
 sts ./api ./extensions/users-permissions/models/ -e -g ./components/ -o path/to/your/types/dir/
@@ -37,7 +37,7 @@ export enum IOrderPayment {
   card = "card",
   check = "check",
 }
-// OR union types (by default)
+// OR string literal types (by default)
 export interface IOrder {
   payment: "card" | "check";
 }

@@ -74,7 +74,7 @@ export class CommandLineInterface {
       type: Boolean,
       typeLabel: '{underline Boolean}',
       defaultValue: false,
-      description: 'If true, enumeration is generate, else Union Types is used',
+      description: 'If true, Enumeration is generate, else string literal types is used',
     },
   ];
 
