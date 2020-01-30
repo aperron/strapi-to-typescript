@@ -4,11 +4,11 @@ Convert the Strapi models to TypeScript interfaces by processing each of the `./
 
 # Install and Run
 
-```console
+```sh
 yarn config set @aperron:registry https://npm.pkg.github.com
 ```
 
-```console
+```sh
 yarn add -g @aperron/strapi-to-typescript
 #yarn --update-checksums
 cd path/to/strapi/
@@ -17,14 +17,35 @@ sts ./api/ -g ./components/ -o path/to/your/types/dir/
 
 You may define multiple inputs. In case your API models have relations to other plugins like 'users-permissions'.
 
-```console
-sts ./api ./extensions/users-permissions/models/ -o path/to/your/types/dir/
+```sh
+sts ./api ./extensions/users-permissions/models/ -g ./components/ -o path/to/your/types/dir/
 ```
 
+You may generate enumeration or union types with option -e
+
+```sh
+sts ./api ./extensions/users-permissions/models/ -e -g ./components/ -o path/to/your/types/dir/
+```
+
+```js
+// enumeration (with -e option) 
+export interface IOrder {
+  payment: IOrderPayment;
+}
+
+export enum IOrderPayment {
+  card = "card",
+  check = "check",
+}
+// OR union types (by default)
+export interface IOrder {
+  payment: "card" | "check";
+}
+```
 
 # Build
 
-```console
+```sh
 npm i
 npm run build
 ```
